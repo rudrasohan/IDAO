@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import pickle
 
 def format_time(data):
     time = []
@@ -45,3 +46,14 @@ def process_sat_data(data_train, data_test, scale=10000):
     data_test['epoch'] = format_time(data_test)
     scale_data(data_train, data_test, scale)
     cluster_data(data_train, data_test)
+    
+def pickle_save(obj, path):
+    output_file = open(path, 'wb')
+    pickle.dump(obj, output_file)
+    output_file.close()
+    
+def pickle_load(path):
+    input_file = open(path, 'rb')
+    obj = pickle.load(input_file)
+    input_file.close()
+    return obj
