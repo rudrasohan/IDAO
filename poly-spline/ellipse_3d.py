@@ -4,14 +4,9 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 
-def get_ellipse_data(data, sat_id, ellipse_id, sim):
-    cols = ['x', 'y', 'z']
-    if (sim):
-        cols = [(axis + '_sim') for axis in cols]
+def get_ellipse_data(data, sat_id, ellipse_id, cols):
     ellipse_data = data[data['sat_id'] == sat_id].loc[:, cols]
     ellipse_data = ellipse_data.iloc[ellipse_id * 24 : (ellipse_id + 1) * 24, :].values
-    ellipse_mean = ellipse_data.mean(axis=0)
-    ellipse_data -= ellipse_mean
     return ellipse_data
 
 def get_rotation_parameters(ellipse_data):
@@ -32,8 +27,8 @@ def rodrigues_rotate(vect, axis, phi):
     vect_rotated += axis * np.dot(z_axis, vect) * (1 - np.cos(phi))
     return vect_rotated
 
-def transform3d(data, sat_id, ellipse_id, sim=True):
-    ellipse_data = get_ellipse_data(data, sat_id, ellipse_id, sim)
+def transform3d(data, sat_id, ellipse_id, cols):
+    ellipse_data = get_ellipse_data(data, sat_id, ellipse_id, cols)
     ellipse_normal, rotation_axis, phi = get_rotation_parameters(ellipse_data)
     transformed_data = np.array([rodrigues_rotate(vect, rotation_axis, phi) for vect in ellipse_data])
     transformed_data = transformed_data[:,[0,1]]
