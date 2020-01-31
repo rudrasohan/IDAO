@@ -205,7 +205,7 @@ path = '../data/'
 def get_checkpoint(path, file):
     file_list = os.listdir(path)
     if file not in file_list:
-        return [0,0]
+        return [-1,-1]
     df = pd.read_csv(path + file)
     last_sat_id, last_ellipse_id = df.iloc[-1,[0,1]].values.astype(int)
     return [last_sat_id, last_ellipse_id]
@@ -215,7 +215,7 @@ def get_checkpoint(path, file):
 
 def generate_data(data, path, file):
     last_sat_id, last_ellipse_id = get_checkpoint(path, file)
-    if (last_sat_id == 0 and last_ellipse_id == 0):
+    if (last_sat_id == -1 and last_ellipse_id == -1):
         generated_data = []
     else:
         generated_data = list(pd.read_csv(path + file).values)
@@ -234,9 +234,9 @@ def generate_data(data, path, file):
             ellipse_parameters = ellipse.get_parameters()
             row = np.concatenate([ids, ellipse_parameters, R, T], axis=0)
             generated_data.append(row)
-            print('Satellite ID: {}, Ellipse Id: {} | Loss: {} [Sim]'.format(sat_id, ellipse_id, ellipse_parameters[-1]))
             df = pd.DataFrame(generated_data)
             df.to_csv(path + file, index=False)
+            print('Satellite ID: {}, Ellipse Id: {} | Loss: {} [Sim]'.format(sat_id, ellipse_id, ellipse_parameters[-1]))
         print ('Satellite ID', sat_id, 'Saved')
 
 
