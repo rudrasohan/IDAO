@@ -222,6 +222,7 @@ def generate_data(data, path, file):
     for sat_id, sat_data in data.items():
         if (sat_id < last_sat_id):
             continue
+        n_ellipses = sat_data.shape[0] - 1
         for ellipse_id, ellipse_data in enumerate(sat_data):
             if (ellipse_id <= last_ellipse_id):
                 continue
@@ -236,16 +237,16 @@ def generate_data(data, path, file):
             generated_data.append(row)
             df = pd.DataFrame(generated_data)
             df.to_csv(path + file, index=False)
-            print('Satellite ID: {}, Ellipse Id: {} | Loss: {} [Sim]'.format(sat_id, ellipse_id, ellipse_parameters[-1]))
+            print('Satellite ID: {}, Ellipse Id: {}/{} | Loss: {} [Sim]'.format(sat_id, ellipse_id, n_ellipses, ellipse_parameters[-1]))
         print ('Satellite ID', sat_id, 'Saved')
 
 
 # In[ ]:
 
-#generate_data(pos_sim, path, 'data_sim.csv')
+generate_data(pos_sim, path, 'data_sim.csv')
 
 
 # In[ ]:
 
-generate_data(pos_real, path, 'data_real.csv')
+#generate_data(pos_real, path, 'data_real.csv')
 
